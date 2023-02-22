@@ -4,6 +4,12 @@ source("utils.R")
 
 grassland <- read_csv("appdata/normallandschaft.csv")
 
+datasets <- c("normallandschaft","tww","moore")
+
+names(datasets) <- datasets
+
+dataset_list <- map(datasets, \(x)read_csv(file.path("appdata",paste0(x,".csv"))))
+
 mycols <- list(
   drawing = list(
     rgba_string = "rgba(0, 51, 255, 1)",
@@ -54,7 +60,11 @@ shinyServer(function(input, output) {
       )
   })
   geodata_i <- reactive({
-    geodata_i <- select_dataset(geodata, input$aggregation, input$datensatz)
+    select_dataset(geodata, input$aggregation, input$datensatz)
+  })
+
+  dataset_i <- reactive({
+    dataset_list[[input$datensatz]]
   })
 
   observe({
@@ -141,7 +151,7 @@ shinyServer(function(input, output) {
       ranges <- ranges()[[1]]
       lat <- ranges[, 2]
       lng <- ranges[, 1]
-      grassland |>
+      dataset_i() |>
         filter(
           lange > min(lng),
           lange < max(lng),
@@ -149,7 +159,7 @@ shinyServer(function(input, output) {
           breite < max(lat)
         )
     } else {
-      grassland[FALSE, ]
+      dataset_i()[FALSE, ]
     }
   })
 
@@ -175,11 +185,9 @@ shinyServer(function(input, output) {
 
 
   grassland_renamed <- reactive({
-    grassland <- grassland |>
+    dataset_i() |>
       rename(column_y = input$column_y) |>
       rename(agg = input$aggregation)
-
-    return(grassland)
   })
 
   grassland_inbounds_renamed <- reactive({
