@@ -1,7 +1,7 @@
 
 
 appfiles <- c(
-    c("ui.R","server.R","utils.R"),
+    c("ui.R","server.R","utils.R", "libraries.R"),
     list.files("appdata", full.names = TRUE)
 )
 
