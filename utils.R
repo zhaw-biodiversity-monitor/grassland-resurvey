@@ -116,7 +116,7 @@ create_legend <- function(bivariate_matrix, attribute_y = "Attribute Y", include
 
   bivariate_matrix_df <- tibble(
     colour = as.vector(bivariate_matrix),
-    row = rep(seq_len(n_classes), times = n_classes),
+    row = rep(rev(seq_len(n_classes)), times = n_classes),
     col = rep(seq_len(n_classes), each = n_classes)
   ) |>
     arrange(row)
