@@ -2,7 +2,7 @@
 
 
 legend_html <- create_legend(bivariate_matrix)
-browser()
+# browser()
 # htmltools::write.csv(legend_html, file = "legend3.html", append = FALSE, quote = TRUE, sep = " ")
 
   leaflet(geodata_i) |>
