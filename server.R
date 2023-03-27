@@ -99,7 +99,7 @@ shinyServer(function(input, output) {
     # mypal <- rev(RColorBrewer::brewer.pal(n_classes, "RdYlBu"))
     mypal <- c("#91BFDB", "#FFFFBF", "#FC8D59")
 
-    bivariate_matrix <- bivariate_matrix_alpha(mypal, n_classes, alpha_range = c(.20, 0.90))
+    bivariate_matrix <- bivariate_matrix_alpha(mypal, n_classes, alpha_range = c(.20, 0.95))
     # browser()
     legend_html <- create_legend(bivariate_matrix,clean_names(input$column_y))
 
