@@ -6,6 +6,7 @@
 
 .ylabel, .xlabel{
     background-color: rgba(255, 255, 255, 1);
+    font-size: medium;
 }
 
 .val {
@@ -31,4 +32,5 @@
 
 .matrix{
     display: grid; 
+    align-content: end;
 }

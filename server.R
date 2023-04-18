@@ -93,9 +93,6 @@ shinyServer(function(input, output) {
     geodata_i$grp <- factor(paste(n_obs_grp, ycol_grp, sep = "-"), levels = fac_levels)
 
 
-
-
-
     # mypal <- rev(RColorBrewer::brewer.pal(n_classes, "RdYlBu"))
     mypal <- c("#91BFDB", "#FFFFBF", "#FC8D59")
 
