@@ -57,7 +57,7 @@ names(col_y_options) <- clean_names(col_y_options)
 shinyUI(fluidPage(
   tags$script(src = "myjs.js"),
   # Application title
-  titlePanel("Grassland Biodiverstiy in Switzerland"),
+  titlePanel("Biodiversitätsmonitor: Grasland"),
   
   # Sidebar with a slider input for number of bins
   sidebarLayout(
