@@ -4,7 +4,7 @@ source("utils.R")
 
 grassland <- read_csv("appdata/normallandschaft.csv")
 
-datasets <- c("normallandschaft","tww","moore")
+datasets <- c("normallandschaft")
 
 names(datasets) <- datasets
 

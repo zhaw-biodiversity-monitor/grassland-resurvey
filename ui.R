@@ -1,12 +1,3 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 
 source("libraries.R")
 source("utils.R")
@@ -18,7 +9,7 @@ aggregation1 <- unique(layers$aggregation1)
 aggregation1 <- aggregation1[aggregation1 != "layers"]
 
 aggregation1 <- c("hex10","hex20","BGR","kantone")
-datasets <- c("normallandschaft","tww","moore")
+datasets <- c("normallandschaft") # ,"tww","moore"
 
 
 
