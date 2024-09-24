@@ -166,18 +166,19 @@ shinyServer(function(input, output) {
 
   # Makes sure that this object exists even before the first clicking event
   selected_object <- reactiveVal("")
-  observeEvent(input$map_shape_click, {
-    loc_list <- input$map_shape_click
-    loc_list <- input$map_shape_click
-    geodata_i <-
-      select_dataset(geodata, input$aggregation, input$datensatz)
-    loc <- st_point(c(loc_list$lng, loc_list$lat)) |>
-      st_sfc(crs = 4326)
-
-    selected_object_str <-
-      as.vector(geodata_i[loc, input$aggregation, drop = TRUE])
-    selected_object(selected_object_str) # sets the value of this reactiveValue
-  })
+  # Reactivate the next lines if clicking on a shape should highlight points in the plot 
+  # observeEvent(input$map_shape_click, {
+  #   loc_list <- input$map_shape_click
+  #   loc_list <- input$map_shape_click
+  #   geodata_i <-
+  #     select_dataset(geodata, input$aggregation, input$datensatz)
+  #   loc <- st_point(c(loc_list$lng, loc_list$lat)) |>
+  #     st_sfc(crs = 4326)
+  # 
+  #   selected_object_str <-
+  #     as.vector(geodata_i[loc, input$aggregation, drop = TRUE])
+  #   selected_object(selected_object_str) # sets the value of this reactiveValue
+  # })
 
 
   grassland_renamed <- reactive({
