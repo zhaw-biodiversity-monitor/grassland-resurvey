@@ -2,59 +2,40 @@
 source("libraries.R")
 source("utils.R")
 
-gpkg_path <- "appdata/vectors.gpkg"
-layers <- read_sf(gpkg_path, "layers_overview")
-# todo: obsolte?
-aggregation1 <- unique(layers$aggregation1)
-aggregation1 <- aggregation1[aggregation1 != "layers"]
+gpkg_path <- "appdata/vectors_resurvey.gpkg"
+# layers <- read_sf(gpkg_path, "layers_overview")
 
-aggregation1 <- c("hex10","hex20","BGR","kantone")
+layers <- st_layers(gpkg_path)[[1]]
+
+sfobs <- st_read(gpkg_path)
+
+
+# todo: obsolte?
+aggregation1 <- aggregation1 <- c("Hexagone (10x10km)" = "hex10","Hexagone (20x20km)" = "hex20","Biogeografische Regionen" = "bgr","Kantone"="kantone")
+
+# aggregation1 <- aggregation1[aggregation1 != "layers"]
+
+# aggregation1 <- c("hex10","hex20","BGR","kantone")
 datasets <- c("normallandschaft") # ,"tww","moore"
 
 
 
-col_y_options <- c(
-  "artenreichtum_gefasspflanzen",
-  "artenreichtum_neophyten",
-  "artenanteil_neophyten",
-  "deckungsanteil_neophyten",
-  "temperaturzahl",
-  "kontinentalitatszahl",
-  "feuchtezahl",
-  "reaktionszahl",
-  "nahrstoffzahl",
-  "strategie_c",
-  "strategie_r",
-  "strategie_s"
-)
+col_y_options <- colnames(sfobs)[7:21]
 
 names(col_y_options) <- clean_names(col_y_options)
 
-# aggregation_layers <-
-#   c(
-#    "Hexagon 10km" = "grass_hex10km",
-#    "Hexagon 5km" = "grass_hex5km",
-#    "Hexagon 20km" = "grass_hex20km",
-#    "Biogeografische Regionen" = "grass_biogreg",
-#    "Kantone" = "grass_kantone",
-#    "Kantone x Biogeografische Regionen" = "grass_kantone_biogreg",
-#    "Biogeografische Regionen x Hexagon 10km" = "grass_hex10km_biogreg",
-#    "Kantone x Hexagon 10km"= "grass_hex10km_kantone"
-#     # "Biogeografische Regionen",
-#    # "Kantone"
-#   )
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   tags$script(src = "myjs.js"),
   # Application title
-  titlePanel("Biodiversitätsmonitor: Grasland"),
+  titlePanel("Biodiversitätsmonitor: Resurvey"),
   
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
       # sliderInput("hoehenstufe", "Höhenstufe:", min = 0, max = 3000, value = c(0,3000)),
-      selectInput("datensatz", "Datensatz", datasets),
+      # selectInput("datensatz", "Datensatz", datasets),
       selectInput(
         "aggregation",
         "Aggregation",

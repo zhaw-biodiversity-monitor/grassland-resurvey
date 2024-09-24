@@ -2,13 +2,11 @@
 source("libraries.R")
 source("utils.R")
 
-grassland <- read_csv("appdata/normallandschaft.csv")
-
 datasets <- c("normallandschaft")
 
 names(datasets) <- datasets
 
-dataset_list <- map(datasets, \(x)read_csv(file.path("appdata",paste0(x,".csv"))))
+dataset_list <- read_csv("appdata/resurvey.csv")
 
 mycols <- list(
   drawing = list(
@@ -21,7 +19,7 @@ mycols <- list(
   )
 )
 
-gpkg_path <- "appdata/vectors.gpkg"
+gpkg_path <- "appdata/vectors_resurvey.gpkg"
 geodata <- read_all_layers(gpkg_path, "layers_overview")
 
 shinyServer(function(input, output) {
@@ -40,31 +38,32 @@ shinyServer(function(input, output) {
         group = "Pixelkarte farbig"
       ) |>
       addLayersControl(baseGroups = c("Pixelkarte grau", "Pixelkarte farbig", "Swissimage")) |>
-      fitBounds(5.955902, 45.81796, 10.49206, 47.80845) |>
+      fitBounds(5.955902, 45.81796, 10.49206, 47.80845) #|>
       # set singleFeature = TRUE to only disaable multi-feature drawing
-      addDrawToolbar(
-        polylineOptions = FALSE,
-        polygonOptions = FALSE,
-        circleOptions = FALSE,
-        markerOptions = FALSE,
-        circleMarkerOptions = FALSE,
-        singleFeature = TRUE,
-        rectangleOptions = drawRectangleOptions(
-          shapeOptions = drawShapeOptions(
-            color = as.character(mycols$drawing$hex),
-            fill = FALSE,
-            weight = 2
-          )
-        ),
-        editOptions = editToolbarOptions()
-      )
+      # addDrawToolbar(
+      #   polylineOptions = FALSE,
+      #   polygonOptions = FALSE,
+      #   circleOptions = FALSE,
+      #   markerOptions = FALSE,
+      #   circleMarkerOptions = FALSE,
+      #   singleFeature = TRUE,  # turn this back on if we want to be able to draw polygons
+      #   rectangleOptions = drawRectangleOptions(
+      #     shapeOptions = drawShapeOptions(
+      #       color = as.character(mycols$drawing$hex),
+      #       fill = FALSE,
+      #       weight = 2
+      #     )
+      #   ),
+      #   editOptions = editToolbarOptions()
+      # )
   })
   geodata_i <- reactive({
-    select_dataset(geodata, input$aggregation, input$datensatz)
+    # select_dataset(geodata, input$aggregation, input$datensatz)
+    geodata[[input$aggregation]]
   })
 
   dataset_i <- reactive({
-    dataset_list[[input$datensatz]]
+    dataset_list
   })
 
   observe({
@@ -96,7 +95,7 @@ shinyServer(function(input, output) {
     # mypal <- rev(RColorBrewer::brewer.pal(n_classes, "RdYlBu"))
     mypal <- c("#91BFDB", "#FFFFBF", "#FC8D59")
 
-    bivariate_matrix <- bivariate_matrix_alpha(mypal, n_classes, alpha_range = c(.20, 0.95))
+    bivariate_matrix <- bivariate_matrix_alpha(mypal, n_classes, alpha_range = c(.40, 0.95))
     # browser()
     legend_html <- create_legend(bivariate_matrix,clean_names(input$column_y))
 
@@ -118,9 +117,9 @@ shinyServer(function(input, output) {
 
   observe({
     geodata_i <- geodata_i()
-
+    
     selvec <- as.vector(geodata_i[, input$aggregation, drop = TRUE]) == selected_object()
-
+    
     leafletProxy("map", data = geodata_i[selvec, ]) |>
       clearGroup("polygonselection") |>
       addPolygons(fillOpacity = 0, group = "polygonselection", color = mycols$selected_polygon$hex, fill = FALSE)
@@ -183,15 +182,15 @@ shinyServer(function(input, output) {
 
   grassland_renamed <- reactive({
     dataset_i() |>
-      rename(column_y = input$column_y) |>
-      rename(agg = input$aggregation)
+      rename(column_y = input$column_y) #|>
+      # rename(agg = input$aggregation)
   })
 
   grassland_inbounds_renamed <- reactive({
     grassland_inbounds <- grassland_inbounds() |>
       rename(column_y = input$column_y)
-    grassland_inbounds <-
-      grassland_inbounds |> rename(agg = input$aggregation)
+    # grassland_inbounds <-
+      # grassland_inbounds |> rename(agg = input$aggregation)
 
     return(grassland_inbounds)
   })
@@ -201,7 +200,7 @@ shinyServer(function(input, output) {
     fig <-
       plot_ly(
         grassland_renamed(),
-        x = ~meereshohe,
+        x = ~jahr,
         y = ~column_y,
         type = "scatter",
         mode = "markers",
@@ -238,7 +237,7 @@ shinyServer(function(input, output) {
         hovermode = FALSE,
         clickmode = "none",
         yaxis = list(title = paste0(clean_names(input$column_y), add_unit(input$column_y))),
-        xaxis = list(title = "Meereshöhe (m.ü.M.)"),
+        xaxis = list(title = "Erhebungszeitpunkt"),
         modebar = list(
           remove = c(
             "autoScale2d",

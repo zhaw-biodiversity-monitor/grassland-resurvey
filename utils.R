@@ -18,29 +18,19 @@ clean_names <- function(str) {
 
 
 add_unit <- function(input, add_break = TRUE, add_brackets = TRUE) {
-  unit <- if (str_detect(input, "artenreichtum")) {
-    "Anzahl Arten"
-  } else if (str_detect(input, "anteil")) {
-    "Anteil zwischen 0 - 1"
-  } else if (str_detect(input, "temperaturzahl")) {
-    "T-Zahl zwischen 1 - 9"
-  } else if (str_detect(input, "kontinentalitatszahl")) {
-    "K-Zahl zwischen 1 - 9"
-  } else if (str_detect(input, "freuchtezahl")) {
-    "F-Zahl zwischen 1 - 12"
-  } else if (str_detect(input, "reaktionszahl")) {
-    "R-Zahl zwischen 1 - 9"
-  } else if (str_detect(input, "nahrstoffzahl")) {
-    "N-Zahl zwischen 1 - 9"
-  } else if (str_detect(input, "strategie_c")) {
-    "competitor"
-  } else if (str_detect(input, "strategie_s")) {
-    "stress tolerator"
-  } else if (str_detect(input, "strategie_r")) {
-    "ruderal"
-  } else {
-    ""
-  }
+  unit <- case_when(
+    str_detect(input, "artenreichtum") ~ "Anzahl Arten",
+    str_detect(input, "anteil") ~ "Anteil Neophyten zwischen 0-1",
+    str_detect(input, "temperaturzahl") ~ "Temperaturzahl",
+    str_detect(input, "kontinentalitatszahl") ~ "Kontinentalitätszahl",
+    str_detect(input, "freuchtezahl") ~ "Feuchtezahl",
+    str_detect(input, "reaktionszahl") ~ "Reaktionszahl",
+    str_detect(input, "nahrstoffzahl") ~ "Nährstoffzahl",
+    str_detect(input, "strategie_c") ~ "Konkurrenzzahl",
+    str_detect(input, "strategie_s") ~ "Stresszahl",
+    str_detect(input, "strategie_r") ~ "Ruderalzahl",
+    .default = ""
+  )
 
   if (add_brackets & unit != "") {
     unit <- paste0("(", unit, ")")
