@@ -25,9 +25,28 @@ datasets <- c("normallandschaft") # ,"tww","moore"
 
 
 
-col_y_options <- colnames(sfobs)[1:13]
 
-names(col_y_options) <- clean_names(col_y_options)
+
+col_y_options <- c(
+"Artenreichtum (absolut)" = "artenzahl",
+"Artenreichtum (relativ)" = "relative_artenzahl",
+"Shannon-Index" = "shannon_index",
+"Shannon-Evenness" = "shannon_evenness",
+"Mittleren Temperaturzahl (1–5)" = "temperaturzahl",
+"Mittler Kontinentalitätszahl (1–5)" = "kontinentalitatszahl",
+"Mittlere Lichtzahl (1–5)" = "lichtzahl",
+"Mittlerer Feuchtezahl (1–5)" = "feuchtezahl",
+"Mittlerer Reaktionszahl (1–5)" = "reaktionszahl",
+"Mittlerer Nährstoffzahl (1–5)" = "nahrstoffzahl",
+"Mittlerer Humuszahl (1–5)" = "humuszahl",
+"Mittlerer Konkurrenzstrategie (0–3)" = "konkurrenzzahl",
+"Mittlerer Ruderalstrategie (0–3)" = "ruderalzahl",
+"Mittlerer Stresszahl (0–3)" = "stresszahl",
+"Mittlerer Mahdverträglichkeitszahl (1–5)" = "mahdvertraglichkeit"
+)
+
+stopifnot(all((col_y_options) %in% colnames(sfobs)))
+
 
 
 # Define UI for application that draws a histogram
@@ -48,7 +67,7 @@ shinyUI(fluidPage(
       ),
       selectInput(
         "column_y",
-        "Variable",
+        "Jährlicher Trend von",
         col_y_options
       ),
 
