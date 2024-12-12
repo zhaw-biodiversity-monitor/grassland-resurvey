@@ -5,13 +5,18 @@ source("utils.R")
 gpkg_path <- "appdata/vectors_resurvey.gpkg"
 # layers <- read_sf(gpkg_path, "layers_overview")
 
-layers <- st_layers(gpkg_path)[[1]]
+layers <- st_layers(gpkg_path)$name
 
-sfobs <- st_read(gpkg_path)
+sfobs <- st_read(gpkg_path, layers[1])
 
 
-# todo: obsolte?
-aggregation1 <- aggregation1 <- c("Hexagone (10x10km)" = "hex10","Hexagone (20x20km)" = "hex20","Biogeografische Regionen" = "bgr","Kantone"="kantone")
+aggregation1 <- aggregation1 <- c(
+  "Hexagone (10x10km)" = "hex10",
+  "Hexagone (20x20km)" = "hex20",
+  "Biogeografische Regionen" = "bgr",
+  "Kantone"="kantone",
+  "keine Aggregation" = "punkte"
+  )
 
 # aggregation1 <- aggregation1[aggregation1 != "layers"]
 
@@ -20,7 +25,7 @@ datasets <- c("normallandschaft") # ,"tww","moore"
 
 
 
-col_y_options <- colnames(sfobs)[7:21]
+col_y_options <- colnames(sfobs)[1:13]
 
 names(col_y_options) <- clean_names(col_y_options)
 
@@ -29,7 +34,7 @@ names(col_y_options) <- clean_names(col_y_options)
 shinyUI(fluidPage(
   tags$script(src = "myjs.js"),
   # Application title
-  titlePanel("Biodiversitätsmonitor: Resurvey"),
+  titlePanel("Zeitreihen von Vegetationsaufnahmen der Schweiz"),
   
   # Sidebar with a slider input for number of bins
   sidebarLayout(
@@ -43,11 +48,11 @@ shinyUI(fluidPage(
       ),
       selectInput(
         "column_y",
-        "Unabhängige Variabel",
+        "Variable",
         col_y_options
       ),
 
-      plotlyOutput("scatterplot"),
+      # plotlyOutput("scatterplot"), # removed plot, since it does not make sense in the current state (https://github.com/zhaw-biodiversity-monitor/zhaw-biodiversity-monitor.github.io/issues/10)
     ),
     
     # Show a plot of the generated distribution
