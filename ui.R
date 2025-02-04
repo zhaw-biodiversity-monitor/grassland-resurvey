@@ -2,12 +2,11 @@
 source("libraries.R")
 source("utils.R")
 
-gpkg_path <- "appdata/vectors_resurvey.gpkg"
+gpkg_path <- "appdata/vectors_infoflora.gpkg"
 # layers <- read_sf(gpkg_path, "layers_overview")
 
 layers <- st_layers(gpkg_path)$name
 
-sfobs <- st_read(gpkg_path, layers[1])
 
 
 aggregation1 <- aggregation1 <- c(
@@ -28,24 +27,13 @@ datasets <- c("normallandschaft") # ,"tww","moore"
 
 
 col_y_options <- c(
-"Artenreichtum (absolut)" = "artenzahl",
-"Artenreichtum (relativ)" = "relative_artenzahl",
-"Shannon-Index" = "shannon_index",
-"Shannon-Evenness" = "shannon_evenness",
-"Mittleren Temperaturzahl (1–5)" = "temperaturzahl",
-"Mittler Kontinentalitätszahl (1–5)" = "kontinentalitatszahl",
-"Mittlere Lichtzahl (1–5)" = "lichtzahl",
-"Mittlerer Feuchtezahl (1–5)" = "feuchtezahl",
-"Mittlerer Reaktionszahl (1–5)" = "reaktionszahl",
-"Mittlerer Nährstoffzahl (1–5)" = "nahrstoffzahl",
-"Mittlerer Humuszahl (1–5)" = "humuszahl",
-"Mittlerer Konkurrenzstrategie (0–3)" = "konkurrenzzahl",
-"Mittlerer Ruderalstrategie (0–3)" = "ruderalzahl",
-"Mittlerer Stresszahl (0–3)" = "stresszahl",
-"Mittlerer Mahdverträglichkeitszahl (1–5)" = "mahdvertraglichkeit"
+  "Species Richness" = "species_richness",
+  "Relative Species Richness" = "relative_species_richness",
+  "Datenpunkte" = "n"
 )
 
-stopifnot(all((col_y_options) %in% colnames(sfobs)))
+# sfobs <- st_read(gpkg_path, layers[1])
+# stopifnot(all((col_y_options) %in% colnames(sfobs)))
 
 
 
@@ -53,13 +41,15 @@ stopifnot(all((col_y_options) %in% colnames(sfobs)))
 shinyUI(fluidPage(
   tags$script(src = "myjs.js"),
   # Application title
-  titlePanel("Zeitreihen von Vegetationsaufnahmen der Schweiz"),
+  titlePanel("Vegetationsdatenbank der Schweiz"),
   
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
       # sliderInput("hoehenstufe", "Höhenstufe:", min = 0, max = 3000, value = c(0,3000)),
       # selectInput("datensatz", "Datensatz", datasets),
+      
+      
       selectInput(
         "aggregation",
         "Aggregation",
@@ -67,7 +57,7 @@ shinyUI(fluidPage(
       ),
       selectInput(
         "column_y",
-        "Jährlicher Trend von",
+        "Variable",
         col_y_options
       ),
 
