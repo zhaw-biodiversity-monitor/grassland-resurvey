@@ -12,7 +12,7 @@ clean_names <- function(str) {
   # }
 
   str |>
-    str_replace("_", " ") |>
+    str_replace_all("_", " ") |>
     str_to_title()
 }
 
@@ -127,7 +127,7 @@ create_legend <- function(bivariate_matrix, attribute_y = "Attribute Y", include
     tags$div(class = "matrix", style = "grid-template-columns: repeat(3, 50px); grid-auto-rows: 50px") #hardcoded, remove
 
   empty_div <- tags$div(class = "xlabel")
-  x_axis_div <- tags$div(class = "xlabel", "# of Observations→")
+  x_axis_div <- tags$div(class = "xlabel", "# Beobachtungen→")
 
 
 
