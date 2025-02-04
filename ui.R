@@ -26,11 +26,7 @@ datasets <- c("normallandschaft") # ,"tww","moore"
 
 
 
-col_y_options <- c(
-  "Species Richness" = "species_richness",
-  "Relative Species Richness" = "relative_species_richness",
-  "Datenpunkte" = "n"
-)
+
 
 # sfobs <- st_read(gpkg_path, layers[1])
 # stopifnot(all((col_y_options) %in% colnames(sfobs)))

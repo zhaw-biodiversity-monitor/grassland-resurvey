@@ -103,6 +103,9 @@ shinyServer(function(input, output) {
         
         
         # browser()
+        
+        column_y <- names(col_y_options[col_y_options == input$column_y])
+        
         leafletProxy("map", data = geodata_i) |>
           clearShapes() |>
           clearControls() |>
@@ -111,8 +114,8 @@ shinyServer(function(input, output) {
             radius = 2,
             color = ~pal(ycol), 
             fillOpacity = 1, opacity = 1) |> 
-          addLegend("bottomright", pal = pal, values = ycol,
-                    title = clean_names(input$column_y),
+          addLegend("bottomleft", pal = pal, values = ycol,
+                    title = column_y,
                     opacity = 1
           )
       }
@@ -174,8 +177,12 @@ shinyServer(function(input, output) {
         mypal <- c("#91BFDB", "#FFFFBF", "#FC8D59")
         
         bivariate_matrix <- bivariate_matrix_alpha(mypal, n_classes, alpha_range = c(.40, 0.95))
-        # browser()
-        legend_html <- create_legend(bivariate_matrix,clean_names(input$column_y))
+        
+        
+        column_y <- names(col_y_options[col_y_options == input$column_y])
+        
+        
+        legend_html <- create_legend(bivariate_matrix,column_y)
         
         pal_col <- as.vector(bivariate_matrix)
         pal <- colorFactor(pal_col, levels = fac_levels, alpha = TRUE)
