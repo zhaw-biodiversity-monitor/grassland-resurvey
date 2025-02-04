@@ -51,11 +51,17 @@ shinyUI(fluidPage(
         "Aggregation",
         aggregation1
       ),
+      
       selectInput(
-        "column_y",
-        "Variable",
-        col_y_options
-      ),
+          "column_y",
+          "Variable",
+          col_y_options
+        ),
+      shiny::p("
+               «Relativer Artenreichtum» macht die Artenzahlen von unterschiedlich grossen Aufnahmeflächen vergleichbar. Dafür wurde eine mittlere Artenzahl-Areal-Funktion für alle Vegetationsaufnahmen in der Datenbank im doppellogarithmischen Raum gerechnet (entsprechend einer Potenzfunktion). Dargestellt sind die Abweichungen vom erwarteten Wert auf einer log10-Skala. Mithin bedeutet ein Wert von +0.3, dass die Artenzahl doppelt so hoch ist wie für die Flächengrösse zu erwarten, bei -0.3 dagegen ist der Wert nur halb so hoch wie erwartet.
+               ")
+      
+      
 
       # plotlyOutput("scatterplot"), # removed plot, since it does not make sense in the current state (https://github.com/zhaw-biodiversity-monitor/zhaw-biodiversity-monitor.github.io/issues/10)
     ),
