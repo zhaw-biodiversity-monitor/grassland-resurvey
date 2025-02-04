@@ -130,6 +130,12 @@ shinyServer(function(input, output) {
         
         pal <- colorNumeric("viridis", range(geodata_i$n))
         
+        
+        # browser()
+        geodata_i$label <- paste(
+          paste("Anzahl Erhebungen", geodata_i$n, sep = ":")
+        )
+        
         leafletProxy("map", data = geodata_i) |>
           clearShapes() |>
           clearControls() |>
@@ -138,7 +144,7 @@ shinyServer(function(input, output) {
             color = ~ pal(n),
             fillOpacity = 1,
             opacity = 0,
-            # label = ~ lapply(label, htmltools::HTML)
+            label = ~ lapply(label, htmltools::HTML)
           ) |> 
           addLegend("bottomleft", pal = pal, values = ~n,
                     title = "Anzahl Beobachtungen",
@@ -152,8 +158,14 @@ shinyServer(function(input, output) {
         
         n_obs <- geodata_i[["n"]]
         
+        
+        
+        column_y <- names(col_y_options[col_y_options == input$column_y])
+        
+       
+        
         geodata_i$label <- paste(
-          paste(input$column_y, round(ycol, 2), sep = ":"),
+          paste(column_y, round(ycol, 2), sep = ":"),
           paste("Anzahl Erhebungen", n_obs, sep = ":"),
           sep = "<br>"
         )
@@ -217,9 +229,17 @@ shinyServer(function(input, output) {
     
       selvec <- as.vector(geodata_i[, input$aggregation, drop = TRUE]) == selected_object()
       
+      
+      # browser()
       leafletProxy("map", data = geodata_i[selvec, ]) |>
         clearGroup("polygonselection") |>
-        addPolygons(fillOpacity = 0, group = "polygonselection", color = mycols$selected_polygon$hex, fill = FALSE)  
+        addPolygons(
+          fillOpacity = 0, 
+          group = "polygonselection", 
+          color = mycols$selected_polygon$hex, 
+          fill = FALSE,
+          # label = n
+          )  
     }
     
   })
