@@ -21,16 +21,12 @@ aggregation1 <- aggregation1 <- c(
 # aggregation1 <- aggregation1[aggregation1 != "layers"]
 
 # aggregation1 <- c("hex10","hex20","BGR","kantone")
-datasets <- c("normallandschaft") # ,"tww","moore"
+# datasets <- c("normallandschaft") # ,"tww","moore"
 
 
 
 
 
-
-
-# sfobs <- st_read(gpkg_path, layers[1])
-# stopifnot(all((col_y_options) %in% colnames(sfobs)))
 
 
 
