@@ -91,17 +91,12 @@ shinyServer(function(input, output) {
         
         ycol <- geodata_i[[input$column_y]]
         
-        # NA's are possible (for now!)
-        
-        qu <- quantile(ycol, probs = c(0.025, 0.975))
+        qu <- quantile(ycol, probs = c(0.025, 0.975), na.rm = TRUE)
         
         ycol <- ifelse(ycol > qu[2], qu[2], ycol)
         ycol <- ifelse(ycol < qu[1], qu[1], ycol)
         
-        pal <- colorNumeric(palette = "RdYlBu",domain = ycol)
-        
-        
-        # browser()
+        pal <- colorNumeric(palette = "RdYlBu",domain = ycol,na.color = "#80808000")
         
         column_y <- names(col_y_options[col_y_options == input$column_y])
         
