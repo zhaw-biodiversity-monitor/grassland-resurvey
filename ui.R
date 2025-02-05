@@ -10,6 +10,7 @@ layers <- st_layers(gpkg_path)$name
 
 
 aggregation1 <- aggregation1 <- c(
+  "Hexagone (5x5km)" = "hex5",
   "Hexagone (10x10km)" = "hex10",
   "Hexagone (20x20km)" = "hex20",
   "Biogeografische Regionen" = "bgr",
