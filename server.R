@@ -92,7 +92,6 @@ shinyServer(function(input, output) {
         ycol <- geodata_i[[input$column_y]]
         
         # NA's are possible (for now!)
-        ycol <- ycol[!is.na(ycol)]
         
         qu <- quantile(ycol, probs = c(0.025, 0.975))
         
