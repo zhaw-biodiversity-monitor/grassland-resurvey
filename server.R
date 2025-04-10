@@ -22,6 +22,10 @@ mycols <- list(
 gpkg_path <- "appdata/vectors_infoflora.gpkg"
 geodata <- read_all_layers(gpkg_path, "layers_overview")
 
+
+
+
+
 shinyServer(function(input, output) {
   output$map <- renderLeaflet({
     leaflet() |>
@@ -39,23 +43,6 @@ shinyServer(function(input, output) {
       ) |>
       addLayersControl(baseGroups = c("Pixelkarte grau", "Pixelkarte farbig", "Swissimage")) |>
       fitBounds(5.955902, 45.81796, 10.49206, 47.80845) #|>
-      # set singleFeature = TRUE to only disaable multi-feature drawing
-      # addDrawToolbar(
-      #   polylineOptions = FALSE,
-      #   polygonOptions = FALSE,
-      #   circleOptions = FALSE,
-      #   markerOptions = FALSE,
-      #   circleMarkerOptions = FALSE,
-      #   singleFeature = TRUE,  # turn this back on if we want to be able to draw polygons
-      #   rectangleOptions = drawRectangleOptions(
-      #     shapeOptions = drawShapeOptions(
-      #       color = as.character(mycols$drawing$hex),
-      #       fill = FALSE,
-      #       weight = 2
-      #     )
-      #   ),
-      #   editOptions = editToolbarOptions()
-      # )
   })
   geodata_i <- reactive({
     # select_dataset(geodata, input$aggregation, input$datensatz)
@@ -65,6 +52,7 @@ shinyServer(function(input, output) {
   dataset_i <- reactive({
     dataset_list
   })
+  
 
   observe({
     
@@ -75,53 +63,34 @@ shinyServer(function(input, output) {
     
     if(input$aggregation == "punkte"){
       
-      if(input$column_y == "n"){
-        
-        leafletProxy("map", data = geodata_i) |>
-          clearShapes() |>
-          clearControls() |>
-          addCircleMarkers(
-            fillColor = "black",
-            radius = 2,
-            color = "black", 
-            fillOpacity = 1, 
-            opacity = 1) 
-        
-      } else{
-        
-        ycol <- geodata_i[[input$column_y]]
-        
-        # NA's are possible (for now!)
-        ycol <- ycol[!is.na(ycol)]
-        
-        qu <- quantile(ycol, probs = c(0.025, 0.975))
-        
-        ycol <- ifelse(ycol > qu[2], qu[2], ycol)
-        ycol <- ifelse(ycol < qu[1], qu[1], ycol)
-        
-        pal <- colorNumeric(palette = "RdYlBu",domain = ycol)
-        
-        
-        # browser()
-        
-        column_y <- names(col_y_options[col_y_options == input$column_y])
-        
-        leafletProxy("map", data = geodata_i) |>
-          clearShapes() |>
-          clearControls() |>
-          addCircleMarkers(
-            fillColor = ~pal(ycol),
-            radius = 2,
-            color = ~pal(ycol), 
-            fillOpacity = 1, opacity = 1) |> 
-          addLegend("bottomleft", pal = pal, values = ycol,
-                    title = column_y,
-                    opacity = 1
-          )
-      }
+      # browser()
+      qu <- quantile(ycol, probs = c(0.025, 0.975))
+      
+      ycol <- ifelse(ycol > qu[2], qu[2], ycol)
+      ycol <- ifelse(ycol < qu[1], qu[1], ycol)
+      
+      pal <- colorNumeric(palette = "RdYlBu",domain = ycol)
+      
+      geodata_i <- geodata_i |> 
+        filter(dataset_id %in% input$dataset) |> 
+        filter(lebensraumgruppe %in% input$lebensraumgruppen) |> 
+        filter(flache_m2 > input$flaeche[1], flache_m2 < input$flaeche[2])
       
       
-      
+      leafletProxy("map", data = geodata_i) |>
+        clearShapes() |>
+        clearMarkers() |> 
+        clearControls() |>
+        addCircleMarkers(
+          fillColor = ~pal(ycol),
+          radius = 8, 
+          color = ~pal(ycol), 
+          fillOpacity = 1, 
+          opacity = 1) |> 
+        addLegend("bottomright", pal = pal, values = ycol,
+                  title = clean_names(input$column_y),
+                  opacity = 1
+        )
     } else{
       
       if(input$column_y == "n"){
@@ -212,7 +181,49 @@ shinyServer(function(input, output) {
           ) 
       }
       
-       
+      geodata_i$label <- paste(
+        paste(str_to_title(input$column_y), round(ycol, 2), sep = ":"),
+        paste("Anzahl Erhebungen", n_obs, sep = ":"),
+        sep = "<br>"
+      )
+      
+      n_classes <- 3
+      # anticipate all *possible* factor levels
+      fac_levels <- expand_grid(seq_len(n_classes), seq_len(n_classes)) |>
+        apply(1, paste, collapse = "-")
+      
+      n_obs_interval <- classIntervals(n_obs, n_classes, "jenks")
+      ycol_interval <- classIntervals(ycol, n_classes, "jenks")
+      
+      
+      n_obs_grp <- findCols(n_obs_interval)
+      ycol_grp <- findCols(ycol_interval)
+      
+      geodata_i$grp <- factor(paste(n_obs_grp, ycol_grp, sep = "-"), levels = fac_levels)
+      
+      
+      # mypal <- rev(RColorBrewer::brewer.pal(n_classes, "RdYlBu"))
+      mypal <- c("#91BFDB", "#FFFFBF", "#FC8D59")
+      
+      bivariate_matrix <- bivariate_matrix_alpha(mypal, n_classes, alpha_range = c(.40, 0.95))
+      # browser()
+      legend_html <- create_legend(bivariate_matrix,clean_names(input$column_y))
+      
+      pal_col <- as.vector(bivariate_matrix)
+      pal <- colorFactor(pal_col, levels = fac_levels, alpha = TRUE)
+      
+      leafletProxy("map", data = geodata_i) |>
+        clearShapes() |>
+        clearControls() |>
+        clearMarkers() |> 
+        addControl(legend_html, position = "bottomleft", className = "") |>
+        addPolygons(
+          fillColor = ~ pal(grp),
+          color = ~ pal(grp),
+          fillOpacity = 1,
+          opacity = 0,
+          label = ~ lapply(label, htmltools::HTML)
+        )  
     }
     
     
