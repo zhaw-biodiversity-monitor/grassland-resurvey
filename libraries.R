@@ -14,3 +14,6 @@ library("purrr")
 library("stringr")
 library("classInt")
 library("bslib")
+
+# install.packages("shinyWidgets")
+library(shinyWidgets)
