@@ -34,7 +34,15 @@ update_map_points <- function(map_proxy, data, ycol, column_y) {
   qu <- quantile(ycol, probs = c(0.025, 0.975))
   ycol <- pmin(pmax(ycol, qu[1]), qu[2])
   
-  pal <- colorNumeric(palette = "RdYlBu", domain = ycol)
+
+  pal_col <- RColorBrewer::brewer.pal(11, "RdYlBu")
+  if (column_y %in% c("feuchtezahl", "reaktionszahl")) {
+    pal_col <- rev(pal_col)
+  } 
+
+  pal <- colorNumeric(palette = pal_col, domain = ycol)
+  # Use inverted color scale for Feuchtezahl and Reaktionszahl
+  
   
   # Create popup content
   popup_content <- paste0(
