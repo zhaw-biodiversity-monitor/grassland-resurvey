@@ -55,6 +55,7 @@ update_map_points <- function(map_proxy, data, ycol, column_y) {
       fillOpacity = 1, 
       opacity = 1,
       popup = popup_content,
+      layerId = ~dataset_id,
       group = "main_points"
     ) |>
     # Add highlight layer (initially invisible)

@@ -92,7 +92,7 @@ shinyServer(function(input, output) {
       # Filter points with same dataset ID
       highlight_data <- filtered_data[filtered_data$dataset_id == dataset_id, ]
       
-      # Get color palette
+      # Get color palette for the fill
       pal <- color_palette()
       
       # Update highlight layer
@@ -102,9 +102,10 @@ shinyServer(function(input, output) {
           data = highlight_data,
           fillColor = ~pal(get_column_values(highlight_data, input$column_y)),
           radius = 12,
-          color = ~pal(get_column_values(highlight_data, input$column_y)),
-          fillOpacity = 0.8,
-          opacity = 0.8,
+          color = "black",  # Black border
+          fillOpacity = 1,
+          opacity = 1,
+          weight = 2,  # Thicker border
           group = "highlight_points"
         )
     }
@@ -117,31 +118,10 @@ shinyServer(function(input, output) {
       clearGroup("highlight_points")
   })
 
-  observe({
-    geodata_i <- geodata_i()
-    
-    if(input$aggregation == "punkte"){
-      # print("wow")
-    } else{
-      selvec <- as.vector(geodata_i[, input$aggregation, drop = TRUE]) == selected_object()
-      
-      leafletProxy("map", data = geodata_i[selvec, ]) |>
-        clearGroup("polygonselection") |>
-        addPolygons(
-          fillOpacity = 0, 
-          group = "polygonselection", 
-          color = mycols$selected_polygon$hex, 
-          fill = FALSE,
-          # label = n
-          )  
-    }
-  })
-
   ranges <- reactive({
     all_features <- input$map_draw_all_features
     features <- all_features$features
     coords <- map(features, \(x)x$geometry$coordinates[[1]])
-    # print(coords)
     map(coords, \(x) {
       x |>
         map(\(y)c(y[[1]], y[[2]])) |>
@@ -172,16 +152,12 @@ shinyServer(function(input, output) {
 
   grassland_renamed <- reactive({
     dataset_i() |>
-      rename(column_y = input$column_y) #|>
-      # rename(agg = input$aggregation)
+      rename(column_y = input$column_y)
   })
 
   grassland_inbounds_renamed <- reactive({
     grassland_inbounds <- grassland_inbounds() |>
       rename(column_y = input$column_y)
-    # grassland_inbounds <-
-      # grassland_inbounds |> rename(agg = input$aggregation)
-
     return(grassland_inbounds)
   })
 })
