@@ -14,6 +14,7 @@ read_all_layers <- function(file, exception = NA) {
 }
 
 clean_names <- function(str) {
+
   # if (str_detect(str, "kontinentalitatszahl")) {
   #    str <- "kontinentalit$tszahl"
   # } else if (str_detect(input, "nahrstoffzahl")) {
@@ -128,7 +129,7 @@ create_legend <- function(bivariate_matrix, attribute_y = "Attribute Y", include
 
 
 
-  y_axis_div <- tags$div(class = "ylabel", paste(attribute_y,"→"))
+  y_axis_div <- tags$div(class = "ylabel", paste(clean_names(attribute_y),"→"))
   matrix_div <- bivariate_matrix_df |>
     pmap(\(colour, row, col){
       tags$div(tags$div(paste(row, col, sep = "-"), class = "tooltip"), class = c("val", paste0("row-", row), paste0("col-", col)))
