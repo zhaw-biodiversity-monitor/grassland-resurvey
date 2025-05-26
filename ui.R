@@ -1,8 +1,8 @@
-
 source("libraries.R")
+source("config.R")
 source("utils.R")
 
-gpkg_path <- "appdata/vectors_infoflora.gpkg"
+gpkg_path <- "appdata/vectors_resurvey.gpkg"
 # layers <- read_sf(gpkg_path, "layers_overview")
 
 layers <- st_layers(gpkg_path)$name
@@ -68,36 +68,32 @@ col_y_options <- c(
 
 
 
-# Define UI for application that draws a histogram
+# Define UI for application
 shinyUI(fluidPage(
   tags$script(src = "myjs.js"),
   titlePanel("Zeitreihen von Vegetationsaufnahmen der Schweiz"),
   
   sidebarLayout(
     sidebarPanel(
-      # selectInput("datensatz", "Datensatz", datasets),
-      
-      
       selectInput(
         "aggregation",
         "Aggregation",
-        aggregation1
+        UI_CONFIG$aggregation_options
       ),
       
       selectInput(
         "column_y",
         "Jährlicher Trend von",
-        col_y_options
+        UI_CONFIG$column_options
       ),
       
       conditionalPanel(
         condition = "input.aggregation == 'punkte'",
-        # Swiched to shinyWidgets (from selectInput) for checkboxes in the dropdown
         shinyWidgets::pickerInput(
           "dataset",
           "Datenset",
-          choices = datasets2,
-          selected = datasets2,
+          choices = UI_CONFIG$dataset_options,
+          selected = UI_CONFIG$dataset_options,
           options = pickerOptions(actionsBox = TRUE),
           multiple = TRUE
         ),
@@ -105,9 +101,8 @@ shinyUI(fluidPage(
         shinyWidgets::pickerInput(
           "lebensraumgruppen",
           "Lebensraumgruppen",
-          choices = lebensraumgruppen,
-          selected = lebensraumgruppen,
-          # options = pickerOptions(actionsBox = TRUE),
+          choices = UI_CONFIG$habitat_groups,
+          selected = UI_CONFIG$habitat_groups,
           multiple = TRUE
         ),
 
@@ -118,25 +113,12 @@ shinyUI(fluidPage(
           max = 500,
           step = 50,
           value = c(0,500)
-          )
-        
+        )
       )
-      
-     
-
-      # plotlyOutput("scatterplot"), # removed plot, since it does not make sense in the current state (https://github.com/zhaw-biodiversity-monitor/zhaw-biodiversity-monitor.github.io/issues/10)
     ),
     
-    # Show a plot of the generated distribution
     mainPanel(
-            leaflet::leafletOutput("map", height = 600)
-
-      # tabsetPanel(
-      # type = "tabs",
-      # tabPanel("Map", leaflet::leafletOutput("map", height = 600)),
-      # tabPanel("Legend", plotOutput("legend"))
-      
-    # )
+      leaflet::leafletOutput("map", height = 600)
     )
   )
 ))
