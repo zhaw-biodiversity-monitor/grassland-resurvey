@@ -68,6 +68,7 @@ shinyServer(function(input, output) {
       
       # Update map with polygons
       leafletProxy("map") |>
+        clearMarkers() |> 
         update_map_polygons(geodata_i, ycol, n_obs, input$column_y)
     }
   })
