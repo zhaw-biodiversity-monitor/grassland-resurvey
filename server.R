@@ -131,22 +131,6 @@ shinyServer(function(input, output) {
     })
   })
 
-  grassland_inbounds <- reactive({
-    if (length(ranges()) > 0) {
-      ranges <- ranges()[[1]]
-      lat <- ranges[, 2]
-      lng <- ranges[, 1]
-      dataset_i() |>
-        filter(
-          lange > min(lng),
-          lange < max(lng),
-          breite > min(lat),
-          breite < max(lat)
-        )
-    } else {
-      dataset_i()[FALSE, ]
-    }
-  })
 
   # Makes sure that this object exists even before the first clicking event
   selected_object <- reactiveVal("")
@@ -155,6 +139,8 @@ shinyServer(function(input, output) {
     dataset_i() |>
       rename(column_y = input$column_y)
   })
+
+
 
   grassland_inbounds_renamed <- reactive({
     grassland_inbounds <- grassland_inbounds() |>
