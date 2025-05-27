@@ -99,8 +99,9 @@ update_map_points <- function(map_proxy, data, ycol, column_y) {
 #' @param ycol The column to use for coloring
 #' @param n_obs The number of observations
 #' @param column_y The name of the column for the legend
-update_map_polygons <- function(map_proxy, data, ycol, n_obs, column_y) {
-  n_classes <- 3
+update_map_polygons <- function(map_proxy, data, ycol, n_obs, column_y, n_classes = 3) {
+  
+  # browser()
   fac_levels <- expand_grid(seq_len(n_classes), seq_len(n_classes)) |>
     apply(1, paste, collapse = "-")
   
@@ -129,6 +130,7 @@ update_map_polygons <- function(map_proxy, data, ycol, n_obs, column_y) {
   pal_col <- as.vector(bivariate_matrix)
   pal <- colorFactor(pal_col, levels = fac_levels, alpha = TRUE)
   
+  # browser()
   data$label <- paste(
     paste(str_to_title(column_y), format(round(ycol, 3)), sep = ":"),
     paste("Anzahl Erhebungen", n_obs, sep = ":"),
