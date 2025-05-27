@@ -71,5 +71,5 @@ COLOR_CONFIG <- list(
   #   rgba_string = "rgba(255, 48, 0, 1)",
   #   hex = "#ff3000"
   # ),
-  bivariate_palette = c("#91BFDB", "#FFFFBF", "#FC8D59")
+  bivariate_palette = RColorBrewer::brewer.pal(3, "RdYlBu")
 ) 
