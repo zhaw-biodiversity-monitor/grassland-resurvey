@@ -27,21 +27,22 @@ shinyServer(function(input, output) {
   selected_dataset_id <- reactiveVal(NULL)
   
   # Create color palette
-  color_palette <- reactive({
-    if (input$aggregation == "punkte") {
-
-      filtered_data <- filter_data(
-        geodata_i(),
-        input$dataset,
-        input$lebensraumgruppen,
-        input$flaeche
-      )
-      ycol <- get_column_values(filtered_data, input$column_y)
-      qu <- quantile(ycol, probs = c(0.025, 0.975))
-      ycol <- pmin(pmax(ycol, qu[1]), qu[2])
-      colorNumeric(palette = "RdYlBu", domain = ycol)
-    }
-  })
+  # color_palette <- reactive({
+  #   if (input$aggregation == "punkte") {
+  # 
+  #     filtered_data <- filter_data(
+  #       geodata_i(),
+  #       input$dataset,
+  #       input$lebensraumgruppen,
+  #       input$flaeche
+  #     )
+  #     ycol <- get_column_values(filtered_data, input$column_y)
+  #     qu <- quantile(ycol, probs = c(0.025, 0.975))
+  #     ycol <- pmin(pmax(ycol, qu[1]), qu[2])
+  #     
+  #     colorNumeric(palette = "RdYlBu", domain = ycol)
+  #   }
+  # })
   
   # Observe changes and update map
   observe({
@@ -85,7 +86,10 @@ shinyServer(function(input, output) {
     
     output$scatterplot <- plot_ly(x = ycol) |> 
       add_histogram() |> 
-      layout(xaxis = list(title = clean_names(input$column_y), range = list(maxval*-1, maxval))) |> 
+      layout(
+        xaxis = list(title = clean_names(input$column_y), range = list(maxval*-1, maxval)),
+        yaxis = list(title = "Häufigkeit")
+        ) |> 
       renderPlotly()
     
   })

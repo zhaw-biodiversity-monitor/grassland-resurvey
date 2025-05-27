@@ -63,13 +63,13 @@ UI_CONFIG <- list(
 
 # Color Configuration
 COLOR_CONFIG <- list(
-  drawing = list(
-    rgba_string = "rgba(0, 51, 255, 1)",
-    hex = "#0033FF"
-  ),
-  selected_polygon = list(
-    rgba_string = "rgba(255, 48, 0, 1)",
-    hex = "#ff3000"
-  ),
+  # drawing = list(
+  #   rgba_string = "rgba(0, 51, 255, 1)",
+  #   hex = "#0033FF"
+  # ),
+  # selected_polygon = list(
+  #   rgba_string = "rgba(255, 48, 0, 1)",
+  #   hex = "#ff3000"
+  # ),
   bivariate_palette = c("#91BFDB", "#FFFFBF", "#FC8D59")
 ) 
