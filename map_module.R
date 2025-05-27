@@ -31,17 +31,23 @@ init_map <- function() {
 #' @param ycol The column to use for coloring
 #' @param column_y The name of the column for the legend
 update_map_points <- function(map_proxy, data, ycol, column_y) {
-  qu <- quantile(ycol, probs = c(0.025, 0.975))
-  ycol <- pmin(pmax(ycol, qu[1]), qu[2])
   
+  # browser()
+  threshold_w <- threshold[threshold$Parameter == column_y,] |> 
+    pivot_longer(-Parameter)
+  
+  
+  ycol_labs <- cut(ycol, c(-Inf,threshold_w$value,Inf),labels = c(threshold_w$name[1:2],"Gleichbleibend",threshold_w$name[3:4]))
 
-  pal_col <- RColorBrewer::brewer.pal(11, "RdYlBu")
+  pal_col <- RColorBrewer::brewer.pal(length(levels(ycol_labs)), "RdYlBu")
+  
+  
+  # Use inverted color scale for Feuchtezahl and Reaktionszahl
   if (column_y %in% c("feuchtezahl", "reaktionszahl")) {
     pal_col <- rev(pal_col)
   } 
 
-  pal <- colorNumeric(palette = pal_col, domain = ycol)
-  # Use inverted color scale for Feuchtezahl and Reaktionszahl
+  pal <- colorFactor(palette = pal_col, domain = ycol_labs)
   
   
   # Create popup content
@@ -57,9 +63,11 @@ update_map_points <- function(map_proxy, data, ycol, column_y) {
     # Add main points layer
     addCircleMarkers(
       data = data,
-      fillColor = ~pal(ycol),
+      fillColor = ~pal(ycol_labs),
       radius = 8, 
-      color = ~pal(ycol), 
+      color = "black",
+      # weight = 100,
+      stroke = FALSE,
       fillOpacity = 1, 
       opacity = 1,
       popup = popup_content,
@@ -69,9 +77,9 @@ update_map_points <- function(map_proxy, data, ycol, column_y) {
     # Add highlight layer (initially invisible)
     addCircleMarkers(
       data = data,
-      fillColor = ~pal(ycol),
-      radius = 12,
-      color = ~pal(ycol),
+      # fillColor = ~pal(ycol_labs),
+      # radius = 12,
+      color = "white",
       fillOpacity = 0,
       opacity = 0,
       group = "highlight_points"
@@ -79,7 +87,7 @@ update_map_points <- function(map_proxy, data, ycol, column_y) {
     addLegend(
       "bottomright",
       pal = pal,
-      values = ycol,
+      values = ycol_labs,
       title = clean_names(column_y),
       opacity = 1
     )

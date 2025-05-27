@@ -9,6 +9,9 @@ layers <- st_layers(gpkg_path)$name
 
 
 
+
+
+
 aggregation1 <- aggregation1 <- c(
   "keine Aggregation" = "punkte",
   "Hexagone (10x10km)" = "hex10",

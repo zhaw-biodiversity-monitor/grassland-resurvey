@@ -1,5 +1,7 @@
 # Data Module Functions
 
+
+threshold <- read_csv("appdata/thresholds.csv")
 #' Load all layers from a GeoPackage file
 #' @param file Path to the GeoPackage file
 #' @param exception Layer names to exclude

@@ -19,9 +19,9 @@ shinyServer(function(input, output) {
     geodata[[input$aggregation]]
   })
   
-  dataset_i <- reactive({
-    dataset_list
-  })
+  # dataset_i <- reactive({
+  #   dataset_list
+  # })
   
   # Store the currently selected dataset ID
   selected_dataset_id <- reactiveVal(NULL)
@@ -29,6 +29,7 @@ shinyServer(function(input, output) {
   # Create color palette
   color_palette <- reactive({
     if (input$aggregation == "punkte") {
+
       filtered_data <- filter_data(
         geodata_i(),
         input$dataset,
@@ -47,6 +48,7 @@ shinyServer(function(input, output) {
     geodata_i <- geodata_i()
     
     if (input$aggregation == "punkte") {
+      
       # Filter data for points
       filtered_data <- filter_data(
         geodata_i,
@@ -93,18 +95,16 @@ shinyServer(function(input, output) {
       # Filter points with same dataset ID
       highlight_data <- filtered_data[filtered_data$dataset_id == dataset_id, ]
       
-      # Get color palette for the fill
-      pal <- color_palette()
+      # browser()
       
       # Update highlight layer
       leafletProxy("map") |>
         clearGroup("highlight_points") |>
         addCircleMarkers(
           data = highlight_data,
-          fillColor = ~pal(get_column_values(highlight_data, input$column_y)),
-          radius = 12,
+          radius = 8,
           color = "black",  # Black border
-          fillOpacity = 1,
+          fillOpacity = 0,
           opacity = 1,
           weight = 2,  # Thicker border
           group = "highlight_points"
