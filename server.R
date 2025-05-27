@@ -73,6 +73,21 @@ shinyServer(function(input, output) {
         clearMarkers() |> 
         update_map_polygons(geodata_i, ycol, n_obs, input$column_y)
     }
+    
+    
+  })
+  
+  observe({
+    # browser()
+    ycol <- get_column_values(geodata_i(), input$column_y)
+    
+    maxval <- max(abs(range(ycol)))
+    
+    output$scatterplot <- plot_ly(x = ycol) |> 
+      add_histogram() |> 
+      layout(xaxis = list(title = clean_names(input$column_y), range = list(maxval*-1, maxval))) |> 
+      renderPlotly()
+    
   })
   
   # Handle point clicks
