@@ -112,8 +112,15 @@ update_map_polygons <- function(map_proxy, data, ycol, n_obs, column_y) {
   
   data$grp <- factor(paste(n_obs_grp, ycol_grp, sep = "-"), levels = fac_levels)
   
+  bivariate_palette <- COLOR_CONFIG$bivariate_palette
+  
+  if (!(column_y %in% c("feuchtezahl", "reaktionszahl"))) {
+    bivariate_palette <- rev(bivariate_palette)
+  } 
+  
+  
   bivariate_matrix <- bivariate_matrix_alpha(
-    COLOR_CONFIG$bivariate_palette,
+    bivariate_palette,
     n_classes,
     alpha_range = c(.40, 0.95)
   )
