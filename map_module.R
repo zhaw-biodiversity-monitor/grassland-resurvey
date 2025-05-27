@@ -42,8 +42,8 @@ update_map_points <- function(map_proxy, data, ycol, column_y) {
   pal_col <- RColorBrewer::brewer.pal(length(levels(ycol_labs)), "RdYlBu")
   
   
-  # Use inverted color scale for Feuchtezahl and Reaktionszahl
-  if (column_y %in% c("feuchtezahl", "reaktionszahl")) {
+  # Use inverted color scale if not "Feuchtezahl" or "Reaktionszahl"
+  if (!(column_y %in% c("feuchtezahl", "reaktionszahl"))) {
     pal_col <- rev(pal_col)
   } 
 
