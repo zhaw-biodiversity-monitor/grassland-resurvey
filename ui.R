@@ -116,10 +116,11 @@ shinyUI(fluidPage(
           max = 500,
           step = 50,
           value = c(0,500)
-        )
+        ),
+        plotly::plotlyOutput("scatterplot")
       ),
       
-      plotly::plotlyOutput("scatterplot")
+      
     ),
     
     mainPanel(

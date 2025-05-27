@@ -44,6 +44,17 @@ shinyServer(function(input, output) {
   #   }
   # })
   
+  
+  filtered_data <- reactive({
+    filter_data(
+      geodata_i(),
+      input$dataset,
+      input$lebensraumgruppen,
+      input$flaeche
+    )
+  })
+  
+  
   # Observe changes and update map
   observe({
     geodata_i <- geodata_i()
@@ -51,19 +62,19 @@ shinyServer(function(input, output) {
     if (input$aggregation == "punkte") {
       
       # Filter data for points
-      filtered_data <- filter_data(
-        geodata_i,
-        input$dataset,
-        input$lebensraumgruppen,
-        input$flaeche
-      )
+      # filtered_data <- filter_data(
+      #   geodata_i,
+      #   input$dataset,
+      #   input$lebensraumgruppen,
+      #   input$flaeche
+      # )
       
       # Get column values
-      ycol <- get_column_values(filtered_data, input$column_y)
+      ycol <- get_column_values(filtered_data(), input$column_y)
       
       # Update map with points
       leafletProxy("map") |>
-        update_map_points(filtered_data, ycol, input$column_y)
+        update_map_points(filtered_data(), ycol, input$column_y)
     } else {
       # Get column values
       ycol <- get_column_values(geodata_i, input$column_y)
@@ -78,21 +89,27 @@ shinyServer(function(input, output) {
     
   })
   
-  observe({
-    # browser()
-    ycol <- get_column_values(geodata_i(), input$column_y)
-    
-    maxval <- max(abs(range(ycol)))
-    
-    output$scatterplot <- plot_ly(x = ycol) |> 
-      add_histogram() |> 
-      layout(
-        xaxis = list(title = clean_names(input$column_y), range = list(maxval*-1, maxval)),
-        yaxis = list(title = "Häufigkeit")
+  
+    observe({
+      
+      if(input$aggregation == "punkte"){
+      # browser()
+      ycol <- get_column_values(filtered_data(), input$column_y)
+      
+      maxval <- max(abs(range(ycol)))
+      
+      output$scatterplot <- plot_ly(x = ycol) |> 
+        add_histogram() |> 
+        layout(
+          xaxis = list(title = clean_names(input$column_y), range = list(maxval*-1, maxval)),
+          yaxis = list(title = "Häufigkeit")
         ) |> 
-      renderPlotly()
-    
-  })
+        renderPlotly()
+      
+      }
+      
+    })
+
   
   # Handle point clicks
   observeEvent(input$map_marker_click, {
@@ -104,15 +121,15 @@ shinyServer(function(input, output) {
       selected_dataset_id(dataset_id)
       
       # Get current data
-      filtered_data <- filter_data(
-        geodata_i(),
-        input$dataset,
-        input$lebensraumgruppen,
-        input$flaeche
-      )
+      # filtered_data <- filter_data(
+      #   geodata_i(),
+      #   input$dataset,
+      #   input$lebensraumgruppen,
+      #   input$flaeche
+      # )
       
       # Filter points with same dataset ID
-      highlight_data <- filtered_data[filtered_data$dataset_id == dataset_id, ]
+      highlight_data <- filtered_data()[filtered_data()$dataset_id == dataset_id, ]
       
       # browser()
       
